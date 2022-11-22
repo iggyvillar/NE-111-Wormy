@@ -7,9 +7,9 @@ import random, pygame, sys
 from pygame.locals import *
 
 FPS = 15
-WINDOWWIDTH = 640
+WINDOWWIDTH = 640 #This line and the line after set the size of the window that the game will be played on. I.V.
 WINDOWHEIGHT = 480
-CELLSIZE = 20
+CELLSIZE = 20 #The game is set ina grid, the background, as well as the snake segments, this alters the size of the squares of the grid. I.V.
 assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell size."
 assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
 CELLWIDTH = int(WINDOWWIDTH / CELLSIZE)
