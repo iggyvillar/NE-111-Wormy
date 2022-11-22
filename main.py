@@ -1,7 +1,4 @@
-# Wormy (a Nibbles clone)
-# By Al Sweigart al@inventwithpython.com
-# http://inventwithpython.com/pygame
-# Released under a "Simplified BSD" license
+# Members: I.V. = Iggy Villar 20961016 |  N.G. = Neo Glykis 21023327 |   R.D. = Roshan Dayananda 21013286
 
 import random, pygame, sys
 from pygame.locals import *
