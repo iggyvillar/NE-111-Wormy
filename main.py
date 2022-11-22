@@ -30,31 +30,31 @@ RIGHT = 'right'
 HEAD = 0 # syntactic sugar: index of the worm's head
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT 
+    global FPSCLOCK, DISPLAYSURF, BASICFONT #sets up the variables in the global scope so that they can be accessed by other functions
 
-    pygame.init()
+    pygame.init() #initializes imported modules
     FPSCLOCK = pygame.time.Clock()
-    DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-    BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
-    pygame.display.set_caption('Wormy')
+    DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT)) #setting the display size, using the window width and window hieght stated previously
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 18) #sets the font type and size for the words that will be displayed
+    pygame.display.set_caption('Wormy') #The piece of text that will appear when you start the game
 
-    showStartScreen()
-    while True:
+    showStartScreen() 
+    while True: #This while loop keeps the game running and the game over screen appearing until 'while True' , which is later defined is still true
         runGame()
         showGameOverScreen()
 
 
 def runGame():
     # Set a random start point.
-    startx = random.randint(5, CELLWIDTH - 6)
-    starty = random.randint(5, CELLHEIGHT - 6)
-    wormCoords = [{'x': startx,     'y': starty},
+    startx = random.randint(5, CELLWIDTH - 6)   #determines a random x coordinate in which the snake will be spawned
+    starty = random.randint(5, CELLHEIGHT - 6)  #determines a random y coordinate in which the snake will be spawned
+    wormCoords = [{'x': startx,     'y': starty}, #variable for the coordinates of the snake
                   {'x': startx - 1, 'y': starty},
                   {'x': startx - 2, 'y': starty}]
-    direction = RIGHT
+    direction = RIGHT       #determines the starting direction of which the snake will go, when the game starts
 
     # Start the apple in a random place.
-    apple = getRandomLocation()
+    apple = getRandomLocation()                 #generates a random location for the apple to spawn
 
     while True: # main game loop
         for event in pygame.event.get(): # event handling loop
