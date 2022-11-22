@@ -56,6 +56,7 @@ def runGame():
     # Start the apple in a random place.
     apple = getRandomLocation()                 #generates a random location for the apple to spawn
 
+#Section 2: N.G.
     while True: # main game loop
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT:
@@ -110,7 +111,7 @@ def drawPressKeyMsg():
     pressKeyRect.topleft = (WINDOWWIDTH - 200, WINDOWHEIGHT - 30)
     DISPLAYSURF.blit(pressKeySurf, pressKeyRect)
 
-
+#Section 3: R.D.
 def checkForKeyPress():
     if len(pygame.event.get(QUIT)) > 0:
         terminate()
