@@ -3,17 +3,18 @@
 import random, pygame, sys
 from pygame.locals import *
 
-FPS = 15
-WINDOWWIDTH = 640 #This line and the line after set the size of the window that the game will be played on. I.V.
-WINDOWHEIGHT = 480
-CELLSIZE = 20 #The game is set ina grid, the background, as well as the snake segments, this alters the size of the squares of the grid. I.V.
+# Section 1: I.V.
+FPS = 15 # This line of code controls the frames per second that the game will run on
+WINDOWWIDTH = 640 #This line sets the size of the width of the window in which the game will be played on 
+WINDOWHEIGHT = 480 #Sets the size of the hieght of the windown in which the game will be played on
+CELLSIZE = 20 #The game is set ina grid, the background, as well as the snake segments, this alters the size of the squares of the grid.
 assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell size."
 assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
-CELLWIDTH = int(WINDOWWIDTH / CELLSIZE)
+CELLWIDTH = int(WINDOWWIDTH / CELLSIZE) #
 CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)
 
 #             R    G    B
-WHITE     = (255, 255, 255)
+WHITE     = (255, 255, 255) #This whole subsection of code is setting colours as variables so that they can be more easily accessed and readable, rather than inputting them as a set of numbers.
 BLACK     = (  0,   0,   0)
 RED       = (255,   0,   0)
 GREEN     = (  0, 255,   0)
@@ -21,7 +22,7 @@ DARKGREEN = (  0, 155,   0)
 DARKGRAY  = ( 40,  40,  40)
 BGCOLOR = BLACK
 
-UP = 'up'
+UP = 'up'                   #Similar to the previous little subsection, this area is setting variables for the movement keys, eliminating the extra quotation marks added.
 DOWN = 'down'
 LEFT = 'left'
 RIGHT = 'right'
@@ -29,7 +30,7 @@ RIGHT = 'right'
 HEAD = 0 # syntactic sugar: index of the worm's head
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT
+    global FPSCLOCK, DISPLAYSURF, BASICFONT 
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
