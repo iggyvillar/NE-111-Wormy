@@ -53,10 +53,10 @@ def runGame():
                   {'x': startx - 2, 'y': starty}]
     direction = RIGHT       #determines the starting direction of which the snake will go, when the game starts
 
+ #Section 2: N.G.
     # Start the apple in a random place.
     apple = getRandomLocation()                 #generates a random location for the apple to spawn
 
-#Section 2: N.G.
     while True: # main game loop
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT:
