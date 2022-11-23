@@ -28,7 +28,7 @@ LEFT = 'left'
 RIGHT = 'right'
 
 HEAD = 0 # syntactic sugar: index of the worm's head
-
+#commit test N.G
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT #sets up the variables in the global scope so that they can be accessed by other functions
 
