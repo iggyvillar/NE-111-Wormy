@@ -201,8 +201,8 @@ def drawWorm(wormCoords): # function that draws the worm RD
         pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
 
 
-def drawApple(coord): # 
-    x = coord['x'] * CELLSIZE
+def drawApple(coord): # Function that draws apple, input is coords which is a list of coordinates RD
+    x = coord['x'] * CELLSIZE # Isolates the x cooridinate in the 
     y = coord['y'] * CELLSIZE
     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
     pygame.draw.rect(DISPLAYSURF, RED, appleRect)
