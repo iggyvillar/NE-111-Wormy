@@ -124,13 +124,13 @@ def checkForKeyPress():
     return keyUpEvents[0].key
 
 
-def showStartScreen():
-    titleFont = pygame.font.Font('freesansbold.ttf', 100)
-    titleSurf1 = titleFont.render('Wormy!', True, WHITE, DARKGREEN)
-    titleSurf2 = titleFont.render('Wormy!', True, GREEN)
+def showStartScreen(): # Function for showing the start screen RD
+    titleFont = pygame.font.Font('freesansbold.ttf', 100) # Assigns the freesansbold as the font for the game title, 100 is the font size RD
+    titleSurf1 = titleFont.render('Wormy!', True, WHITE, DARKGREEN) # Assigns one display of the title wiht the colours whiter and dark green RD
+    titleSurf2 = titleFont.render('Wormy!', True, GREEN)# Assigns the secondary title green RD
 
-    degrees1 = 0
-    degrees2 = 0
+    degrees1 = 0 # default degrees the title starts at for title 1 RD
+    degrees2 = 0 # default degrees the title starts at for titles 2 RD
     while True:
         DISPLAYSURF.fill(BGCOLOR)
         rotatedSurf1 = pygame.transform.rotate(titleSurf1, degrees1)
@@ -184,16 +184,16 @@ def showGameOverScreen():
             pygame.event.get() # clear event queue
             return
 
-def drawScore(score):
-    scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE)
-    scoreRect = scoreSurf.get_rect()
-    scoreRect.topleft = (WINDOWWIDTH - 120, 10)
-    DISPLAYSURF.blit(scoreSurf, scoreRect)
+def drawScore(score): # Function that places the players score in the top left RD
+    scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE) # This line dictates the colour in which the score is displayed and the accompanying string RD 
+    scoreRect = scoreSurf.get_rect() # Draws a recctangle around the score and text RD
+    scoreRect.topleft = (WINDOWWIDTH - 120, 10) # Places the socre in the topleft and indicates the exact co-ordinates RD
+    DISPLAYSURF.blit(scoreSurf, scoreRect) # Moves the score onto another surface RD
 
 
-def drawWorm(wormCoords):
-    for coord in wormCoords:
-        x = coord['x'] * CELLSIZE
+def drawWorm(wormCoords): # function that draws the worm RD
+    for coord in wormCoords: # worm coords is a list of coordinates, the for function  runs the function for every coordinate in the list RD 
+        x = coord['x'] * CELLSIZE 
         y = coord['y'] * CELLSIZE
         wormSegmentRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
         pygame.draw.rect(DISPLAYSURF, DARKGREEN, wormSegmentRect)
@@ -201,7 +201,7 @@ def drawWorm(wormCoords):
         pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
 
 
-def drawApple(coord):
+def drawApple(coord): # 
     x = coord['x'] * CELLSIZE
     y = coord['y'] * CELLSIZE
     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
