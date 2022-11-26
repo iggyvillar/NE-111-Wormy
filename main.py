@@ -184,14 +184,14 @@ def showGameOverScreen():
             pygame.event.get() # clear event queue
             return
 
-def drawScore(score): # Function that places the players score in the top left RD
+def drawScore(score): # defines Function that places the players score in the top left RD
     scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE) # This line dictates the colour in which the score is displayed and the accompanying string RD 
     scoreRect = scoreSurf.get_rect() # Draws a recctangle around the score and text RD
     scoreRect.topleft = (WINDOWWIDTH - 120, 10) # Places the socre in the topleft and indicates the exact co-ordinates RD
     DISPLAYSURF.blit(scoreSurf, scoreRect) # Moves the score onto another surface RD
 
 
-def drawWorm(wormCoords): # function that draws the worm RD
+def drawWorm(wormCoords): # defines function that draws the worm RD
     for coord in wormCoords: # worm coords is a list of coordinates, the for function  runs the function for every coordinate in the list RD 
         x = coord['x'] * CELLSIZE 
         y = coord['y'] * CELLSIZE
@@ -201,7 +201,7 @@ def drawWorm(wormCoords): # function that draws the worm RD
         pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
 
 
-def drawApple(coord): # Function that draws apple, input is coords which is a list of coordinates RD
+def drawApple(coord): # defines Function that draws apple, input is coords which is a list of coordinates RD
     x = coord['x'] * CELLSIZE # Isolates the x cooridinate in the 
     y = coord['y'] * CELLSIZE
     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
