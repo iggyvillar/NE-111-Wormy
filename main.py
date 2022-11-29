@@ -1,61 +1,72 @@
-# Members: I.V. = Iggy Villar 20961016 |  N.G. = Neo Glykis 21023327 |   R.D. = Roshan Dayananda 21013286
-
 import random, pygame, sys
 from pygame.locals import *
+from random import randrange
 
-# Section 1: I.V.
-FPS = 15 # This line of code controls the frames per second that the game will run on
-WINDOWWIDTH = 640 #This line sets the size of the width of the window in which the game will be played on 
-WINDOWHEIGHT = 480 #Sets the size of the hieght of the windown in which the game will be played on
-CELLSIZE = 20 #The game is set ina grid, the background, as well as the snake segments, this alters the size of the squares of the grid.
+FPS = 15
+WINDOWWIDTH = 1920      #changed to fullscreen
+WINDOWHEIGHT = 1080
+CELLSIZE = 30
 assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell size."
 assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
-CELLWIDTH = int(WINDOWWIDTH / CELLSIZE) #
+CELLWIDTH = int(WINDOWWIDTH / CELLSIZE)
 CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)
 
 #             R    G    B
-WHITE     = (255, 255, 255) #This whole subsection of code is setting colours as variables so that they can be more easily accessed and readable, rather than inputting them as a set of numbers.
+WHITE     = (255, 255, 255)
 BLACK     = (  0,   0,   0)
 RED       = (255,   0,   0)
-GREEN     = (  0, 255,   0)
-DARKGREEN = (  0, 155,   0)
+GOLD = (255, 225, 26)
+BLUE = (100,149,237)
+GREEN = (102, 204, 0)           #Added a green variable
+PURPLE = (153, 50, 204)         #Changed colours of snake
+DARKPURPLE = (104, 34, 139)
 DARKGRAY  = ( 40,  40,  40)
-BGCOLOR = BLACK
+BGCOLOR = GREEN                 #Changed colour of background
 
-UP = 'up'                   #Similar to the previous little subsection, this area is setting variables for the movement keys, eliminating the extra quotation marks added.
+UP = 'up'
 DOWN = 'down'
 LEFT = 'left'
 RIGHT = 'right'
 
 HEAD = 0 # syntactic sugar: index of the worm's head
-#commit test N.G
+
+enemy = pygame.image.load('enemy (2).png')
+enemy_x = 0
+enemy_y = randrange(WINDOWHEIGHT)
+enemy_speed = 20
+enemy_width = 30
+enemy_height = 30
+
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT #sets up the variables in the global scope so that they can be accessed by other functions
+    global FPSCLOCK, DISPLAYSURF, BASICFONT
 
-    pygame.init() #initializes imported modules
+    pygame.init()
     FPSCLOCK = pygame.time.Clock()
-    DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT)) #setting the display size, using the window width and window hieght stated previously
-    BASICFONT = pygame.font.Font('freesansbold.ttf', 18) #sets the font type and size for the words that will be displayed
-    pygame.display.set_caption('Wormy') #The piece of text that will appear when you start the game
+    DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
+    pygame.display.set_caption('IRNormy')
 
-    showStartScreen() 
-    while True: #This while loop keeps the game running and the game over screen appearing until 'while True' , which is later defined is still true
+    showStartScreen()
+    while True:
         runGame()
         showGameOverScreen()
 
 
 def runGame():
+    global FPS, enemy_y, enemy_x
     # Set a random start point.
-    startx = random.randint(5, CELLWIDTH - 6)   #determines a random x coordinate in which the snake will be spawned
-    starty = random.randint(5, CELLHEIGHT - 6)  #determines a random y coordinate in which the snake will be spawned
-    wormCoords = [{'x': startx,     'y': starty}, #variable for the coordinates of the snake
+    startx = random.randint(5, CELLWIDTH - 6)
+    starty = random.randint(5, CELLHEIGHT - 6)
+    wormCoords = [{'x': startx,     'y': starty},
                   {'x': startx - 1, 'y': starty},
                   {'x': startx - 2, 'y': starty}]
-    direction = RIGHT       #determines the starting direction of which the snake will go, when the game starts
+    direction = RIGHT
 
- #Section 2: N.G.
     # Start the apple in a random place.
-    apple = getRandomLocation()                 #generates a random location for the apple to spawn
+    apple = getRandomLocation()
+    antiapple = getRandomLocation()
+    candy = getRandomLocation()
+    enemy = getRandomLocation()
 
     while True: # main game loop
         for event in pygame.event.get(): # event handling loop
@@ -80,12 +91,21 @@ def runGame():
             if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
                 return # game over
 
-        # check if worm has eaten an apply
+        # check if worm has eaten an apple
         if wormCoords[HEAD]['x'] == apple['x'] and wormCoords[HEAD]['y'] == apple['y']:
             # don't remove worm's tail segment
-            apple = getRandomLocation() # set a new apple somewhere
+            apple = getRandomLocation()# set a new apple somewhere
+            antiapple = getRandomLocation()
+            FPS += 2
         else:
             del wormCoords[-1] # remove worm's tail segment
+
+        if wormCoords[HEAD]['x'] == antiapple['x'] and wormCoords[HEAD]['y'] == antiapple['y']:
+            showYouDiedScreen()
+
+        if wormCoords[HEAD]['x'] == candy['x'] and wormCoords[HEAD]['y'] == candy['y']:
+            candy = getRandomLocation()
+            FPS += 3
 
         # move the worm by adding a segment in the direction it is moving
         if direction == UP:
@@ -98,12 +118,23 @@ def runGame():
             newHead = {'x': wormCoords[HEAD]['x'] + 1, 'y': wormCoords[HEAD]['y']}
         wormCoords.insert(0, newHead)
         DISPLAYSURF.fill(BGCOLOR)
-        drawGrid()
         drawWorm(wormCoords)
+        drawAntiApple(antiapple)
         drawApple(apple)
+        drawCandy(candy)
+        drawEnemy(enemy_x, enemy_y)
+        # if collision():
+        #     showGameOverScreen()
         drawScore(len(wormCoords) - 3)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
+        enemy_x += enemy_speed
+        if enemy_x >= WINDOWWIDTH:
+            enemy_x = 0
+            enemy_y = randrange(WINDOWHEIGHT)
+
+        if wormCoords[HEAD]['x'] == enemy['x'] and wormCoords[HEAD]['y'] == enemy['y']:
+            showYouDiedScreen()
 
 def drawPressKeyMsg():
     pressKeySurf = BASICFONT.render('Press a key to play.', True, DARKGRAY)
@@ -111,7 +142,7 @@ def drawPressKeyMsg():
     pressKeyRect.topleft = (WINDOWWIDTH - 200, WINDOWHEIGHT - 30)
     DISPLAYSURF.blit(pressKeySurf, pressKeyRect)
 
-#Section 3: R.D.
+
 def checkForKeyPress():
     if len(pygame.event.get(QUIT)) > 0:
         terminate()
@@ -124,13 +155,13 @@ def checkForKeyPress():
     return keyUpEvents[0].key
 
 
-def showStartScreen(): # Function for showing the start screen RD
-    titleFont = pygame.font.Font('freesansbold.ttf', 100) # Assigns the freesansbold as the font for the game title, 100 is the font size RD
-    titleSurf1 = titleFont.render('Wormy!', True, WHITE, DARKGREEN) # Assigns one display of the title wiht the colours whiter and dark green RD
-    titleSurf2 = titleFont.render('Wormy!', True, GREEN)# Assigns the secondary title green RD
+def showStartScreen():
+    titleFont = pygame.font.Font('freesansbold.ttf', 100)
+    titleSurf1 = titleFont.render('IRNormy!', True, WHITE, BLUE)
+    titleSurf2 = titleFont.render('IRNormy!', True, RED)
 
-    degrees1 = 0 # default degrees the title starts at for title 1 RD
-    degrees2 = 0 # default degrees the title starts at for titles 2 RD
+    degrees1 = 0
+    degrees2 = 0
     while True:
         DISPLAYSURF.fill(BGCOLOR)
         rotatedSurf1 = pygame.transform.rotate(titleSurf1, degrees1)
@@ -184,35 +215,87 @@ def showGameOverScreen():
             pygame.event.get() # clear event queue
             return
 
-def drawScore(score): # defines Function that places the players score in the top left RD
-    scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE) # This line dictates the colour in which the score is displayed and the accompanying string RD 
-    scoreRect = scoreSurf.get_rect() # Draws a recctangle around the score and text RD
-    scoreRect.topleft = (WINDOWWIDTH - 120, 10) # Places the socre in the topleft and indicates the exact co-ordinates RD
-    DISPLAYSURF.blit(scoreSurf, scoreRect) # Moves the score onto another surface RD
+def drawScore(score):
+    scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE)
+    scoreRect = scoreSurf.get_rect()
+    scoreRect.topleft = (WINDOWWIDTH - 120, 10)
+    DISPLAYSURF.blit(scoreSurf, scoreRect)
 
 
-def drawWorm(wormCoords): # defines function that draws the worm RD
-    for coord in wormCoords: # worm coords is a list of coordinates, the for function  runs the function for every coordinate in the list RD 
-        x = coord['x'] * CELLSIZE 
+def drawWorm(wormCoords):
+    for coord in wormCoords:
+        x = coord['x'] * CELLSIZE
         y = coord['y'] * CELLSIZE
         wormSegmentRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-        pygame.draw.rect(DISPLAYSURF, DARKGREEN, wormSegmentRect)
+        pygame.draw.rect(DISPLAYSURF, DARKPURPLE, wormSegmentRect)
         wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)
-        pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
+        pygame.draw.rect(DISPLAYSURF, PURPLE, wormInnerSegmentRect)
 
 
-def drawApple(coord): # defines Function that draws apple, input is coords which is a list of coordinates RD
-    x = coord['x'] * CELLSIZE # Isolates the x cooridinate in the 
+def drawApple(coord):
+    x = coord['x'] * CELLSIZE
     y = coord['y'] * CELLSIZE
     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
     pygame.draw.rect(DISPLAYSURF, RED, appleRect)
 
+def drawCandy(coord):
+    x = coord['x'] * CELLSIZE
+    y = coord['y'] * CELLSIZE
+    candyRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
+    candy = pygame.image.load('candy 1 (2).png').convert()
+    DISPLAYSURF.blit(candy, candyRect)
 
-def drawGrid():
-    for x in range(0, WINDOWWIDTH, CELLSIZE): # draw vertical lines
-        pygame.draw.line(DISPLAYSURF, DARKGRAY, (x, 0), (x, WINDOWHEIGHT))
-    for y in range(0, WINDOWHEIGHT, CELLSIZE): # draw horizontal lines
-        pygame.draw.line(DISPLAYSURF, DARKGRAY, (0, y), (WINDOWWIDTH, y))
+def drawAntiApple(coord):
+    x = coord['x'] * CELLSIZE
+    y = coord['y'] * CELLSIZE
+    appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
+    pygame.draw.rect(DISPLAYSURF, BLACK, appleRect)
+
+def drawEnemy(x,y):
+    DISPLAYSURF.blit(enemy, (x,y) )
+
+# def collision():
+#
+#     enemy_top_right_x = enemy_x + enemy_width
+#     enemy_top_right_y = enemy_y
+#     enemy_bottom_right_x = enemy_x + enemy_width
+#     enemy_bottom_right_y = enemy_y - enemy_height
+#
+#     snake_top_left_x = wormCoords[HEAD]['x']
+#     snake_top_left_y = wormCoords[HEAD]['y']
+#     snake_bottom_left_x = wormCoords[HEAD]['x']
+#     snake_bottom_left_y = y - 30
+#
+#     if enemy_bottom_right_x >= snake_top_left_x and enemy_bottom_right_y <= snake_top_left_y and enemy_bottom_right_y >= snake_bottom_left_y:
+#         return True
+#     if enemy_top_right_x >= snake_top_left_x and enemy_top_right_y <= snake_top_left_y and enemy_top_right_y >= snake_bottom_left_y:
+#         return True
+#
+#     return False
+
+def showYouDiedScreen():
+    gameOverFont = pygame.font.Font('freesansbold.ttf', 100)
+    gameSurf = gameOverFont.render('YOU ATE THE POISON APPLE', True, RED)
+    overSurf = gameOverFont.render('YOU ARE DEAD!!!', True, RED)
+    gameRect = gameSurf.get_rect()
+    overRect = overSurf.get_rect()
+    gameRect.midtop = (WINDOWWIDTH / 2, 10)
+    overRect.midtop = (WINDOWWIDTH / 2, gameRect.height + 10 + 25)
+    poisonappleimg = pygame.image.load('poison apple 1.png')
+
+    DISPLAYSURF.blit(gameSurf, gameRect)
+    DISPLAYSURF.blit(overSurf, overRect)
+    DISPLAYSURF.blit(poisonappleimg,(0,0))
+    drawPressKeyMsg()
+    pygame.display.update()
+    pygame.time.wait(500)
+    checkForKeyPress() # clear out any key presses in the event queue
+
+    while True:
+        if checkForKeyPress():
+            pygame.event.get() # clear event queue
+            return
+#Deleted grid, for better aesthetics
 
 
 if __name__ == '__main__':
