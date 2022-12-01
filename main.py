@@ -35,8 +35,6 @@ bird = pygame.image.load('png-image-bird-28 (2).png')
 bird_x = 0
 bird_y = randrange(WINDOWHEIGHT)
 bird_speed = 20
-# enemy_width = 30
-# enemy_height = 30
 
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT, bird, bird_x, bird_y, bird_speed
