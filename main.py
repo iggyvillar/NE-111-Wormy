@@ -1,6 +1,6 @@
 import random, pygame, sys
 from pygame.locals import *
-from random import randrange
+from random import randrange, randint
 
 FPS = 15
 WINDOWWIDTH = 1920      #changed to fullscreen
@@ -15,6 +15,7 @@ CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)
 WHITE     = (255, 255, 255)
 BLACK     = (  0,   0,   0)
 RED       = (255,   0,   0)
+PINK = (255, 20, 147)
 GOLD = (255, 225, 26)
 BLUE = (100,149,237)
 GREEN = (102, 204, 0)           #Added a green variable
@@ -30,15 +31,15 @@ RIGHT = 'right'
 
 HEAD = 0 # syntactic sugar: index of the worm's head
 
-enemy = pygame.image.load('enemy (2).png')
-enemy_x = 0
-enemy_y = randrange(WINDOWHEIGHT)
-enemy_speed = 20
-enemy_width = 30
-enemy_height = 30
+bird = pygame.image.load('png-image-bird-28 (2).png')
+bird_x = 0
+bird_y = randrange(WINDOWHEIGHT)
+bird_speed = 20
+# enemy_width = 30
+# enemy_height = 30
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT
+    global FPSCLOCK, DISPLAYSURF, BASICFONT, bird, bird_x, bird_y, bird_speed
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
@@ -53,7 +54,7 @@ def main():
 
 
 def runGame():
-    global FPS, enemy_y, enemy_x
+    global FPS, bird_y, bird_x
     # Set a random start point.
     startx = random.randint(5, CELLWIDTH - 6)
     starty = random.randint(5, CELLHEIGHT - 6)
@@ -62,11 +63,11 @@ def runGame():
                   {'x': startx - 2, 'y': starty}]
     direction = RIGHT
 
+
     # Start the apple in a random place.
     apple = getRandomLocation()
     antiapple = getRandomLocation()
     candy = getRandomLocation()
-    enemy = getRandomLocation()
 
     while True: # main game loop
         for event in pygame.event.get(): # event handling loop
@@ -86,9 +87,11 @@ def runGame():
 
         # check if the worm has hit itself or the edge
         if wormCoords[HEAD]['x'] == -1 or wormCoords[HEAD]['x'] == CELLWIDTH or wormCoords[HEAD]['y'] == -1 or wormCoords[HEAD]['y'] == CELLHEIGHT:
+            FPS = 15
             return # game over
         for wormBody in wormCoords[1:]:
             if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
+                FPS = 15
                 return # game over
 
         # check if worm has eaten an apple
@@ -96,7 +99,7 @@ def runGame():
             # don't remove worm's tail segment
             apple = getRandomLocation()# set a new apple somewhere
             antiapple = getRandomLocation()
-            FPS += 2
+            FPS += 3
         else:
             del wormCoords[-1] # remove worm's tail segment
 
@@ -105,7 +108,7 @@ def runGame():
 
         if wormCoords[HEAD]['x'] == candy['x'] and wormCoords[HEAD]['y'] == candy['y']:
             candy = getRandomLocation()
-            FPS += 3
+            FPS += 2
 
         # move the worm by adding a segment in the direction it is moving
         if direction == UP:
@@ -122,19 +125,16 @@ def runGame():
         drawAntiApple(antiapple)
         drawApple(apple)
         drawCandy(candy)
-        drawEnemy(enemy_x, enemy_y)
+        drawBird(bird_x, bird_y)
         # if collision():
         #     showGameOverScreen()
         drawScore(len(wormCoords) - 3)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-        enemy_x += enemy_speed
-        if enemy_x >= WINDOWWIDTH:
-            enemy_x = 0
-            enemy_y = randrange(WINDOWHEIGHT)
-
-        if wormCoords[HEAD]['x'] == enemy['x'] and wormCoords[HEAD]['y'] == enemy['y']:
-            showYouDiedScreen()
+        bird_x += bird_speed
+        if bird_x >= WINDOWWIDTH:
+            bird_x = 0
+            bird_y = randrange(WINDOWHEIGHT)
 
 def drawPressKeyMsg():
     pressKeySurf = BASICFONT.render('Press a key to play.', True, DARKGRAY)
@@ -193,7 +193,6 @@ def terminate():
 def getRandomLocation():
     return {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
 
-
 def showGameOverScreen():
     gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
     gameSurf = gameOverFont.render('Game', True, WHITE)
@@ -220,7 +219,6 @@ def drawScore(score):
     scoreRect = scoreSurf.get_rect()
     scoreRect.topleft = (WINDOWWIDTH - 120, 10)
     DISPLAYSURF.blit(scoreSurf, scoreRect)
-
 
 def drawWorm(wormCoords):
     for coord in wormCoords:
@@ -251,27 +249,8 @@ def drawAntiApple(coord):
     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
     pygame.draw.rect(DISPLAYSURF, BLACK, appleRect)
 
-def drawEnemy(x,y):
-    DISPLAYSURF.blit(enemy, (x,y) )
-
-# def collision():
-#
-#     enemy_top_right_x = enemy_x + enemy_width
-#     enemy_top_right_y = enemy_y
-#     enemy_bottom_right_x = enemy_x + enemy_width
-#     enemy_bottom_right_y = enemy_y - enemy_height
-#
-#     snake_top_left_x = wormCoords[HEAD]['x']
-#     snake_top_left_y = wormCoords[HEAD]['y']
-#     snake_bottom_left_x = wormCoords[HEAD]['x']
-#     snake_bottom_left_y = y - 30
-#
-#     if enemy_bottom_right_x >= snake_top_left_x and enemy_bottom_right_y <= snake_top_left_y and enemy_bottom_right_y >= snake_bottom_left_y:
-#         return True
-#     if enemy_top_right_x >= snake_top_left_x and enemy_top_right_y <= snake_top_left_y and enemy_top_right_y >= snake_bottom_left_y:
-#         return True
-#
-#     return False
+def drawBird(x,y):
+    DISPLAYSURF.blit(bird, (x, y) )
 
 def showYouDiedScreen():
     gameOverFont = pygame.font.Font('freesansbold.ttf', 100)
