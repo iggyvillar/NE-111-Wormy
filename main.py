@@ -107,7 +107,7 @@ def checkForKeyPress():
     return keyUpEvents[0].key
 def showStartScreen(): # Function for showing the start screen RD
     titleFont = pygame.font.Font('freesansbold.ttf', 100) # Assigns the freesansbold as the font for the game title, 100 is the font size RD
-    titleSurf1 = titleFont.render('Wormy!', True, WHITE, DARKGREEN) # Assigns one display of the title wiht the colours whiter and dark green RD
+    titleSurf1 = titleFont.render('Wormy!', True, WHITE, DARKGREEN) # Renders one display of the title with the colours white and dark green RD
     titleSurf2 = titleFont.render('Wormy!', True, GREEN)# Assigns the secondary title green RD
     degrees1 = 0 # default degrees the title starts at for title 1 RD
     degrees2 = 0 # default degrees the title starts at for titles 2 RD
@@ -134,10 +134,10 @@ def terminate():
     sys.exit()
 def getRandomLocation():
     return {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
-def showGameOverScreen():
-    gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
-    gameSurf = gameOverFont.render('Game', True, WHITE)
-    overSurf = gameOverFont.render('Over', True, WHITE)
+def showGameOverScreen(): # defines the function that displays the GAME OVER screen RD
+    gameOverFont = pygame.font.Font('freesansbold.ttf', 150) # assigns the font and text size of the GAME OVER text RD
+    gameSurf = gameOverFont.render('Game', True, WHITE) # Renders the text in white for the word GAME RD
+    overSurf = gameOverFont.render('Over', True, WHITE) # Renders the text in white for the word OVER RD
     gameRect = gameSurf.get_rect()
     overRect = overSurf.get_rect()
     gameRect.midtop = (WINDOWWIDTH / 2, 10)
@@ -153,15 +153,12 @@ def showGameOverScreen():
             pygame.event.get() # clear event queue
             return
 
-def drawScore(score): # Function that places the players score in the top left RD
 def drawScore(score): # defines Function that places the players score in the top left RD
     scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE) # This line dictates the colour in which the score is displayed and the accompanying string RD 
     scoreRect = scoreSurf.get_rect() # Draws a recctangle around the score and text RD
     scoreRect.topleft = (WINDOWWIDTH - 120, 10) # Places the socre in the topleft and indicates the exact co-ordinates RD
     DISPLAYSURF.blit(scoreSurf, scoreRect) # Moves the score onto another surface RD
 
-
-def drawWorm(wormCoords): # function that draws the worm RD
 def drawWorm(wormCoords): # defines function that draws the worm RD
     for coord in wormCoords: # worm coords is a list of coordinates, the for function  runs the function for every coordinate in the list RD 
         x = coord['x'] * CELLSIZE 
@@ -170,7 +167,6 @@ def drawWorm(wormCoords): # defines function that draws the worm RD
         pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
 
 
-def drawApple(coord): # Function that draws apple, input is coords which is a list of coordinates RD
 def drawApple(coord): # defines Function that draws apple, input is coords which is a list of coordinates RD
     x = coord['x'] * CELLSIZE # Isolates the x cooridinate in the 
     y = coord['y'] * CELLSIZE
