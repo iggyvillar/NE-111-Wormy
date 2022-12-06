@@ -163,7 +163,6 @@ def drawWorm(wormCoords): # defines function that draws the worm RD
     for coord in wormCoords: # worm coords is a list of coordinates, the for function  runs the function for every coordinate in the list RD 
         x = coord['x'] * CELLSIZE 
         y = coord['y'] * CELLSIZE
-@@ -201,7 +201,7 @@ def drawWorm(wormCoords): # function that draws the worm RD
         pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
 
 
