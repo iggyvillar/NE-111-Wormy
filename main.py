@@ -1,68 +1,51 @@
+# Members: I.V. = Iggy Villar 20961016 |  N.G. = Neo Glykis 21023327 |   R.D. = Roshan Dayananda 21013286
 import random, pygame, sys
 from pygame.locals import *
-from random import randrange, randint
-
-FPS = 15
-WINDOWWIDTH = 1920      #changed to fullscreen
-WINDOWHEIGHT = 1080
-CELLSIZE = 30
+# Section 1: I.V.
+FPS = 15 # This line of code controls the frames per second that the game will run on
+WINDOWWIDTH = 640 #This line sets the size of the width of the window in which the game will be played on 
+WINDOWHEIGHT = 480 #Sets the size of the hieght of the windown in which the game will be played on
+CELLSIZE = 20 #The game is set ina grid, the background, as well as the snake segments, this alters the size of the squares of the grid.
 assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell size."
 assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
-CELLWIDTH = int(WINDOWWIDTH / CELLSIZE)
+CELLWIDTH = int(WINDOWWIDTH / CELLSIZE) #
 CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)
-
 #             R    G    B
-WHITE     = (255, 255, 255)
+WHITE     = (255, 255, 255) #This whole subsection of code is setting colours as variables so that they can be more easily accessed and readable, rather than inputting them as a set of numbers.
 BLACK     = (  0,   0,   0)
 RED       = (255,   0,   0)
-PINK = (255, 20, 147)
-GOLD = (255, 225, 26)
-BLUE = (100,149,237)
-GREEN = (102, 204, 0)           #Added a green variable
-PURPLE = (153, 50, 204)         #Changed colours of snake
-DARKPURPLE = (104, 34, 139)
+GREEN     = (  0, 255,   0)
+DARKGREEN = (  0, 155,   0)
 DARKGRAY  = ( 40,  40,  40)
-BGCOLOR = GREEN                 #Changed colour of background
-
-UP = 'up'
+BGCOLOR = BLACK
+UP = 'up'                   #Similar to the previous little subsection, this area is setting variables for the movement keys, eliminating the extra quotation marks added.
 DOWN = 'down'
 LEFT = 'left'
 RIGHT = 'right'
-
 HEAD = 0 # syntactic sugar: index of the worm's head
-
+#commit test N.G
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT
-
-    pygame.init()
+    global FPSCLOCK, DISPLAYSURF, BASICFONT #sets up the variables in the global scope so that they can be accessed by other functions
+    pygame.init() #initializes imported modules
     FPSCLOCK = pygame.time.Clock()
-    DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-    BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
-    pygame.display.set_caption('IRNormy')
-
-    showStartScreen()
-    while True:
+    DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT)) #setting the display size, using the window width and window hieght stated previously
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 18) #sets the font type and size for the words that will be displayed
+    pygame.display.set_caption('Wormy') #The piece of text that will appear when you start the game
+    showStartScreen() 
+    while True: #This while loop keeps the game running and the game over screen appearing until 'while True' , which is later defined is still true
         runGame()
         showGameOverScreen()
-
-
 def runGame():
-    global FPS
     # Set a random start point.
-    startx = random.randint(5, CELLWIDTH - 6)
-    starty = random.randint(5, CELLHEIGHT - 6)
-    wormCoords = [{'x': startx,     'y': starty},
+    startx = random.randint(5, CELLWIDTH - 6)   #determines a random x coordinate in which the snake will be spawned
+    starty = random.randint(5, CELLHEIGHT - 6)  #determines a random y coordinate in which the snake will be spawned
+    wormCoords = [{'x': startx,     'y': starty}, #variable for the coordinates of the snake
                   {'x': startx - 1, 'y': starty},
                   {'x': startx - 2, 'y': starty}]
-    direction = RIGHT
-
-
+    direction = RIGHT       #determines the starting direction of which the snake will go, when the game starts
+ #Section 2: N.G.
     # Start the apple in a random place.
-    apple = getRandomLocation()
-    antiapple = getRandomLocation()
-    candy = getRandomLocation()
-    bird = getRandomLocation()
-
+    apple = getRandomLocation()                 #generates a random location for the apple to spawn
     while True: # main game loop
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT:
@@ -78,36 +61,18 @@ def runGame():
                     direction = DOWN
                 elif event.key == K_ESCAPE:
                     terminate()
-
         # check if the worm has hit itself or the edge
         if wormCoords[HEAD]['x'] == -1 or wormCoords[HEAD]['x'] == CELLWIDTH or wormCoords[HEAD]['y'] == -1 or wormCoords[HEAD]['y'] == CELLHEIGHT:
-            FPS = 15
             return # game over
         for wormBody in wormCoords[1:]:
             if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
-                FPS = 15
                 return # game over
-
-        # check if worm has eaten an apple
+        # check if worm has eaten an apply
         if wormCoords[HEAD]['x'] == apple['x'] and wormCoords[HEAD]['y'] == apple['y']:
             # don't remove worm's tail segment
-            apple = getRandomLocation()# set a new apple somewhere
-            antiapple = getRandomLocation()
-            bird = getRandomLocation()
-            FPS += 3
+            apple = getRandomLocation() # set a new apple somewhere
         else:
             del wormCoords[-1] # remove worm's tail segment
-
-        if wormCoords[HEAD]['x'] == antiapple['x'] and wormCoords[HEAD]['y'] == antiapple['y']:
-            showYouDiedScreen()
-
-        if wormCoords[HEAD]['x'] == bird['x'] and wormCoords[HEAD]['y'] == bird['y']:
-            return
-
-        if wormCoords[HEAD]['x'] == candy['x'] and wormCoords[HEAD]['y'] == candy['y']:
-            candy = getRandomLocation()
-            FPS += 2
-
         # move the worm by adding a segment in the direction it is moving
         if direction == UP:
             newHead = {'x': wormCoords[HEAD]['x'], 'y': wormCoords[HEAD]['y'] - 1}
@@ -119,59 +84,44 @@ def runGame():
             newHead = {'x': wormCoords[HEAD]['x'] + 1, 'y': wormCoords[HEAD]['y']}
         wormCoords.insert(0, newHead)
         DISPLAYSURF.fill(BGCOLOR)
+        drawGrid()
         drawWorm(wormCoords)
-        drawAntiApple(antiapple)
         drawApple(apple)
-        drawCandy(candy)
-        drawBird(bird)
-
-        # if collision():
-        #     showGameOverScreen()
         drawScore(len(wormCoords) - 3)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-
-
 def drawPressKeyMsg():
     pressKeySurf = BASICFONT.render('Press a key to play.', True, DARKGRAY)
     pressKeyRect = pressKeySurf.get_rect()
     pressKeyRect.topleft = (WINDOWWIDTH - 200, WINDOWHEIGHT - 30)
     DISPLAYSURF.blit(pressKeySurf, pressKeyRect)
-
-
+#Section 3: R.D.
 def checkForKeyPress():
     if len(pygame.event.get(QUIT)) > 0:
         terminate()
-
     keyUpEvents = pygame.event.get(KEYUP)
     if len(keyUpEvents) == 0:
         return None
     if keyUpEvents[0].key == K_ESCAPE:
         terminate()
     return keyUpEvents[0].key
-
-
-def showStartScreen():
-    titleFont = pygame.font.Font('freesansbold.ttf', 100)
-    titleSurf1 = titleFont.render('IRNormy!', True, WHITE, BLUE)
-    titleSurf2 = titleFont.render('IRNormy!', True, RED)
-
-    degrees1 = 0
-    degrees2 = 0
+def showStartScreen(): # Function for showing the start screen RD
+    titleFont = pygame.font.Font('freesansbold.ttf', 100) # Assigns the freesansbold as the font for the game title, 100 is the font size RD
+    titleSurf1 = titleFont.render('Wormy!', True, WHITE, DARKGREEN) # Assigns one display of the title wiht the colours whiter and dark green RD
+    titleSurf2 = titleFont.render('Wormy!', True, GREEN)# Assigns the secondary title green RD
+    degrees1 = 0 # default degrees the title starts at for title 1 RD
+    degrees2 = 0 # default degrees the title starts at for titles 2 RD
     while True:
         DISPLAYSURF.fill(BGCOLOR)
         rotatedSurf1 = pygame.transform.rotate(titleSurf1, degrees1)
         rotatedRect1 = rotatedSurf1.get_rect()
         rotatedRect1.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2)
         DISPLAYSURF.blit(rotatedSurf1, rotatedRect1)
-
         rotatedSurf2 = pygame.transform.rotate(titleSurf2, degrees2)
         rotatedRect2 = rotatedSurf2.get_rect()
         rotatedRect2.center = (WINDOWWIDTH / 2, WINDOWHEIGHT / 2)
         DISPLAYSURF.blit(rotatedSurf2, rotatedRect2)
-
         drawPressKeyMsg()
-
         if checkForKeyPress():
             pygame.event.get() # clear event queue
             return
@@ -179,16 +129,11 @@ def showStartScreen():
         FPSCLOCK.tick(FPS)
         degrees1 += 3 # rotate by 3 degrees each frame
         degrees2 += 7 # rotate by 7 degrees each frame
-
-
 def terminate():
     pygame.quit()
     sys.exit()
-
-
 def getRandomLocation():
     return {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
-
 def showGameOverScreen():
     gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
     gameSurf = gameOverFont.render('Game', True, WHITE)
@@ -197,86 +142,44 @@ def showGameOverScreen():
     overRect = overSurf.get_rect()
     gameRect.midtop = (WINDOWWIDTH / 2, 10)
     overRect.midtop = (WINDOWWIDTH / 2, gameRect.height + 10 + 25)
-
     DISPLAYSURF.blit(gameSurf, gameRect)
     DISPLAYSURF.blit(overSurf, overRect)
     drawPressKeyMsg()
     pygame.display.update()
     pygame.time.wait(500)
     checkForKeyPress() # clear out any key presses in the event queue
-
     while True:
         if checkForKeyPress():
             pygame.event.get() # clear event queue
             return
 
-def drawScore(score):
-    scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE)
-    scoreRect = scoreSurf.get_rect()
-    scoreRect.topleft = (WINDOWWIDTH - 120, 10)
-    DISPLAYSURF.blit(scoreSurf, scoreRect)
+def drawScore(score): # Function that places the players score in the top left RD
+def drawScore(score): # defines Function that places the players score in the top left RD
+    scoreSurf = BASICFONT.render('Score: %s' % (score), True, WHITE) # This line dictates the colour in which the score is displayed and the accompanying string RD 
+    scoreRect = scoreSurf.get_rect() # Draws a recctangle around the score and text RD
+    scoreRect.topleft = (WINDOWWIDTH - 120, 10) # Places the socre in the topleft and indicates the exact co-ordinates RD
+    DISPLAYSURF.blit(scoreSurf, scoreRect) # Moves the score onto another surface RD
 
-def drawWorm(wormCoords):
-    for coord in wormCoords:
-        x = coord['x'] * CELLSIZE
+
+def drawWorm(wormCoords): # function that draws the worm RD
+def drawWorm(wormCoords): # defines function that draws the worm RD
+    for coord in wormCoords: # worm coords is a list of coordinates, the for function  runs the function for every coordinate in the list RD 
+        x = coord['x'] * CELLSIZE 
         y = coord['y'] * CELLSIZE
-        wormSegmentRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-        pygame.draw.rect(DISPLAYSURF, DARKPURPLE, wormSegmentRect)
-        wormInnerSegmentRect = pygame.Rect(x + 4, y + 4, CELLSIZE - 8, CELLSIZE - 8)
-        pygame.draw.rect(DISPLAYSURF, PURPLE, wormInnerSegmentRect)
+@@ -201,7 +201,7 @@ def drawWorm(wormCoords): # function that draws the worm RD
+        pygame.draw.rect(DISPLAYSURF, GREEN, wormInnerSegmentRect)
 
 
-def drawApple(coord):
-    x = coord['x'] * CELLSIZE
+def drawApple(coord): # Function that draws apple, input is coords which is a list of coordinates RD
+def drawApple(coord): # defines Function that draws apple, input is coords which is a list of coordinates RD
+    x = coord['x'] * CELLSIZE # Isolates the x cooridinate in the 
     y = coord['y'] * CELLSIZE
     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
     pygame.draw.rect(DISPLAYSURF, RED, appleRect)
-
-def drawCandy(coord):
-    x = coord['x'] * CELLSIZE
-    y = coord['y'] * CELLSIZE
-    candyRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-    candy = pygame.image.load('candy 1 (2).png').convert()
-    DISPLAYSURF.blit(candy, candyRect)
-
-def drawBird(coord):
-    x = coord['x'] * CELLSIZE
-    y = coord['y'] * CELLSIZE
-    birdRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-    bird = pygame.image.load('png-image-bird-28 (2) (1).png').convert()
-    DISPLAYSURF.blit(bird, birdRect)
-
-def drawAntiApple(coord):
-    x = coord['x'] * CELLSIZE
-    y = coord['y'] * CELLSIZE
-    appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-    pygame.draw.rect(DISPLAYSURF, BLACK, appleRect)
-
-
-def showYouDiedScreen():
-    gameOverFont = pygame.font.Font('freesansbold.ttf', 100)
-    gameSurf = gameOverFont.render('YOU ATE THE POISON APPLE', True, RED)
-    overSurf = gameOverFont.render('YOU ARE DEAD!!!', True, RED)
-    gameRect = gameSurf.get_rect()
-    overRect = overSurf.get_rect()
-    gameRect.midtop = (WINDOWWIDTH / 2, 10)
-    overRect.midtop = (WINDOWWIDTH / 2, gameRect.height + 10 + 25)
-
-    DISPLAYSURF.blit(gameSurf, gameRect)
-    DISPLAYSURF.blit(overSurf, overRect)
-    drawPressKeyMsg()
-    pygame.display.update()
-    pygame.time.wait(500)
-    checkForKeyPress()  # clear out any key presses in the event queue
-
-    while True:
-        if checkForKeyPress():
-            pygame.event.get()  # clear event queue
-            return
-
-
-#Deleted grid, for better aesthetics
-
-
+def drawGrid():
+    for x in range(0, WINDOWWIDTH, CELLSIZE): # draw vertical lines
+        pygame.draw.line(DISPLAYSURF, DARKGRAY, (x, 0), (x, WINDOWHEIGHT))
+    for y in range(0, WINDOWHEIGHT, CELLSIZE): # draw horizontal lines
+        pygame.draw.line(DISPLAYSURF, DARKGRAY, (0, y), (WINDOWWIDTH, y))
 if __name__ == '__main__':
     main()
