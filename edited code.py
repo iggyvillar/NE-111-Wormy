@@ -1,10 +1,10 @@
-
 import random, pygame, sys
 from pygame.locals import *
+from random import randrange, randint
 
 FPS = 15
-WINDOWWIDTH = 990      #changed to fullscreen
-WINDOWHEIGHT = 990
+WINDOWWIDTH = 1920      #changed to fullscreen
+WINDOWHEIGHT = 1080
 CELLSIZE = 30
 assert WINDOWWIDTH % CELLSIZE == 0, "Window width must be a multiple of cell size."
 assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
@@ -15,8 +15,10 @@ CELLHEIGHT = int(WINDOWHEIGHT / CELLSIZE)
 WHITE     = (255, 255, 255)
 BLACK     = (  0,   0,   0)
 RED       = (255,   0,   0)
+PINK = (255, 20, 147)
+GOLD = (255, 225, 26)
 BLUE = (100,149,237)
-GREEN = (202,255,112)           #Added a green variable
+GREEN = (102, 204, 0)           #Added a green variable
 PURPLE = (153, 50, 204)         #Changed colours of snake
 DARKPURPLE = (104, 34, 139)
 DARKGRAY  = ( 40,  40,  40)
@@ -45,6 +47,7 @@ def main():
 
 
 def runGame():
+    global FPS
     # Set a random start point.
     startx = random.randint(5, CELLWIDTH - 6)
     starty = random.randint(5, CELLHEIGHT - 6)
@@ -53,9 +56,12 @@ def runGame():
                   {'x': startx - 2, 'y': starty}]
     direction = RIGHT
 
+
     # Start the apple in a random place.
     apple = getRandomLocation()
     antiapple = getRandomLocation()
+    candy = getRandomLocation()
+    bird = getRandomLocation()
 
     while True: # main game loop
         for event in pygame.event.get(): # event handling loop
@@ -75,21 +81,32 @@ def runGame():
 
         # check if the worm has hit itself or the edge
         if wormCoords[HEAD]['x'] == -1 or wormCoords[HEAD]['x'] == CELLWIDTH or wormCoords[HEAD]['y'] == -1 or wormCoords[HEAD]['y'] == CELLHEIGHT:
+            FPS = 15
             return # game over
         for wormBody in wormCoords[1:]:
             if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
+                FPS = 15
                 return # game over
 
         # check if worm has eaten an apple
         if wormCoords[HEAD]['x'] == apple['x'] and wormCoords[HEAD]['y'] == apple['y']:
             # don't remove worm's tail segment
             apple = getRandomLocation()# set a new apple somewhere
+            antiapple = getRandomLocation()
+            bird = getRandomLocation()
+            FPS += 3
         else:
             del wormCoords[-1] # remove worm's tail segment
 
         if wormCoords[HEAD]['x'] == antiapple['x'] and wormCoords[HEAD]['y'] == antiapple['y']:
-            showGameOverScreen()
+            showYouDiedScreen()
 
+        if wormCoords[HEAD]['x'] == bird['x'] and wormCoords[HEAD]['y'] == bird['y']:
+            return
+
+        if wormCoords[HEAD]['x'] == candy['x'] and wormCoords[HEAD]['y'] == candy['y']:
+            candy = getRandomLocation()
+            FPS += 2
 
         # move the worm by adding a segment in the direction it is moving
         if direction == UP:
@@ -105,9 +122,15 @@ def runGame():
         drawWorm(wormCoords)
         drawAntiApple(antiapple)
         drawApple(apple)
+        drawCandy(candy)
+        drawBird(bird)
+
+        # if collision():
+        #     showGameOverScreen()
         drawScore(len(wormCoords) - 3)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
+
 
 def drawPressKeyMsg():
     pressKeySurf = BASICFONT.render('Press a key to play.', True, DARKGRAY)
@@ -166,7 +189,6 @@ def terminate():
 def getRandomLocation():
     return {'x': random.randint(0, CELLWIDTH - 1), 'y': random.randint(0, CELLHEIGHT - 1)}
 
-
 def showGameOverScreen():
     gameOverFont = pygame.font.Font('freesansbold.ttf', 150)
     gameSurf = gameOverFont.render('Game', True, WHITE)
@@ -194,7 +216,6 @@ def drawScore(score):
     scoreRect.topleft = (WINDOWWIDTH - 120, 10)
     DISPLAYSURF.blit(scoreSurf, scoreRect)
 
-
 def drawWorm(wormCoords):
     for coord in wormCoords:
         x = coord['x'] * CELLSIZE
@@ -211,11 +232,47 @@ def drawApple(coord):
     appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
     pygame.draw.rect(DISPLAYSURF, RED, appleRect)
 
+def drawCandy(coord):
+    x = coord['x'] * CELLSIZE
+    y = coord['y'] * CELLSIZE
+    candyRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
+    candy = pygame.image.load('candy 1 (2).png').convert()
+    DISPLAYSURF.blit(candy, candyRect)
+
+def drawBird(coord):
+    x = coord['x'] * CELLSIZE
+    y = coord['y'] * CELLSIZE
+    birdRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
+    bird = pygame.image.load('png-image-bird-28 (2) (1).png').convert()
+    DISPLAYSURF.blit(bird, birdRect)
+
 def drawAntiApple(coord):
     x = coord['x'] * CELLSIZE
     y = coord['y'] * CELLSIZE
-    AntiAppleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
-    pygame.draw.rect(DISPLAYSURF, BLACK, AntiAppleRect)
+    appleRect = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
+    pygame.draw.rect(DISPLAYSURF, BLACK, appleRect)
+
+
+def showYouDiedScreen():
+    gameOverFont = pygame.font.Font('freesansbold.ttf', 100)
+    gameSurf = gameOverFont.render('YOU ATE THE POISON APPLE', True, RED)
+    overSurf = gameOverFont.render('YOU ARE DEAD!!!', True, RED)
+    gameRect = gameSurf.get_rect()
+    overRect = overSurf.get_rect()
+    gameRect.midtop = (WINDOWWIDTH / 2, 10)
+    overRect.midtop = (WINDOWWIDTH / 2, gameRect.height + 10 + 25)
+
+    DISPLAYSURF.blit(gameSurf, gameRect)
+    DISPLAYSURF.blit(overSurf, overRect)
+    drawPressKeyMsg()
+    pygame.display.update()
+    pygame.time.wait(500)
+    checkForKeyPress()  # clear out any key presses in the event queue
+
+    while True:
+        if checkForKeyPress():
+            pygame.event.get()  # clear event queue
+            return
 
 
 #Deleted grid, for better aesthetics
