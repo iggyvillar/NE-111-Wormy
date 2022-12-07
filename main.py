@@ -95,9 +95,9 @@ while True: # main game loop
         pygame.display.update() #displays game updates. N.G
         FPSCLOCK.tick(FPS) #FPS(frames per second) is how many times a game reloads in one second. High frames are desirable for smoother gameplay. This functiom enables a clock to count the seconds in which the frame rate will be based off of. N.G
 
-def drawPressKeyMsg(): #Defines the function that renders the text for "Press a key to play" message RD
-    pressKeySurf = BASICFONT.render('Press a key to play.', True, DARKGRAY) # Renders the text in dark gray RD
-    pressKeyRect = pressKeySurf.get_rect() # changes the text into a rectangular object RD 
+def drawPressKeyMsg(): #Defines the function that renders the text for "Press a key to play" message N.G
+    pressKeySurf = BASICFONT.render('Press a key to play.', True, DARKGRAY) # Renders the text in dark gray N.G
+    pressKeyRect = pressKeySurf.get_rect() # changes the text into a rectangular object N.G 
     pressKeyRect.topleft = (WINDOWWIDTH - 200, WINDOWHEIGHT - 30) 
     DISPLAYSURF.blit(pressKeySurf, pressKeyRect)
     
